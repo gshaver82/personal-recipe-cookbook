@@ -1,0 +1,220 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Homemade+Apple&family=Open+Sans:ital@1&display=swap"); */
+
+/* Seriffed Fonts: */
+
+@import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+/* Scripts: */
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Beth+Ellen&display=swap');
+
+
+/* Sans Serif: */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+
+:root {
+    --measurement: 0.125em;
+    --book: 'IM Fell Double Pica', serif;
+    --sans: 'Montserrat', sans-serif;
+    --script: 'Tangerine', cursive;
+    --fashion: 'Beth Ellen', cursive;
+}
+
+body {
+    font-family: var(--sans);
+}
+
+td, th {
+    padding: 0.4rem 0.6rem !important;
+}
+
+.font-brand {
+    font-family: "Prata";
+    font-size: 4rem;
+}
+
+.font-brand-small {
+    font-family: "Prata";
+    font-size: 3.5rem;
+}
+
+.font-book {
+    font-family: var(--book);
+}
+
+.font-book-italic {
+    font-family: var(--book);
+    font-style: italic;
+}
+
+.splashName {
+  /* font-family: "Homemade Apple", cursive; */
+  font-size: 100px;
+}
+
+.font-script {
+    font-family: var(--script);
+    font-size: 1.5rem;
+}
+
+.font-sans {
+    font-family: var(--sans);
+    font-weight: 300;
+}
+
+h2 {
+  /* font-family: "Homemade Apple", cursive; */
+  font-size: auto;
+}
+
+.font-sans-500 {
+    font-family: var(--sans);
+    font-weight: 500;
+}
+
+.font-fashion {
+    font-family: var(--fashion);
+}
+
+.text-smaller {
+    font-size: smaller;
+}
+
+.rb-btn {
+    background: white;
+    border: var(--measurement) solid black;
+    cursor: pointer;
+    font: 600 1rem/1.5 var(--sans);
+    text-decoration: none;
+    color: black;
+    letter-spacing: var(--measurement);
+    padding: 0.5rem 0.75rem;
+    position: relative;
+    text-transform: uppercase;
+}
+
+.rb-btn-icon {
+    background: white;
+    color: #ced4da;
+    border: none;
+    cursor: pointer;
+    font: 600 1rem/1.5 var(--sans);
+    letter-spacing: var(--measurement);
+    text-transform: uppercase;
+}
+
+.rb-btn-icon :hover {
+    background: white;
+    color: black;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    color: #8b95a5;
+    margin: 1.2rem;
+}
+
+.divider::before {
+    margin-right: 16px;
+}
+
+.divider::after {
+    margin-left: 16px;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    border-top: 1px solid #ebebeb;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.divider-color {
+    border-top: 1px solid #8b95a5;
+    margin: 16px 8px;
+}
+
+.privacy {
+    font-size: smaller;
+}
+
+::placeholder {
+    font-family: var(--book);
+    font-style: italic;
+}
+
+.nounderline {
+    text-decoration: none !important
+}
+
+.btn-delete:hover {
+    color: #EF2D56 !important;
+}
+
+.recipe-border-1 {
+    border: var(--measurement) solid black;
+    border-radius: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.recipe-border-2 {
+    border: thin solid black;
+    border-radius: 0.8rem;
+    margin: 0.2rem;
+    padding: 1rem
+}
+
+.recipe-card:hover {
+    box-shadow: -2px 4px 16px 0px rgba(0,0,0,0.15);
+    cursor: pointer;
+}
+
+.category-badge {
+    color: var(--bs-secondary);
+    border: thin solid lightgray;
+    border-radius: 0.4rem;
+    padding: 0.1rem 0.2rem;
+    margin-left: 0.1rem
+}
+
+.category-badge:hover {
+    color: white;
+    background-color: lightgray;
+    border: thin solid lightgray;
+}
+
+.tags {
+    color: white;
+    background-color: darkgray;
+    border: thin solid darkgray;
+    border-radius: 0.4rem;
+    padding: 0.1rem 0.2rem;
+    margin-left: 0.1rem;
+    text-transform: lowercase;
+}
+
+.background-tiny-stripes {
+    background-image: linear-gradient(90deg, transparent 50%, currentColor 50%);
+    background-size: 10px 10px;
+}
+
+.delete {
+    border-width: 0px;
+    line-height: 0px;
+    box-shadow: none;
+    color: inherit;
+    background-color: inherit;
+}
+
+.delete:hover {
+    color: lightgray;
+}
