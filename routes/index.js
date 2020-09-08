@@ -2,11 +2,12 @@ const path = require("path");
 const router = require("express").Router();
 const apiRoutes = require("./api");
 const admin = require('firebase-admin');
-const serviceAccount = require("../config/serviceAccountKey.json");
+// const serviceAccount = require("../config/serviceAccountKey.json");
+
 
 // Initialize Firebase Admin
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert( process.env.SERVICE_ACCOUNT_KEY || serviceAccount),
     databaseURL: "https://recipe-box-6f07a.firebaseio.com"
 });
 
