@@ -26,10 +26,6 @@ mongoose.connect(
     }
 );
 
-
-
-
-
 app.use(routes);
 
 app.get("*", function (req, res) {
