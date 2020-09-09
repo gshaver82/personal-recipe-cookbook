@@ -27,5 +27,3 @@
     "serve": "^11.3.2"
   }
 }
-
-// "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
