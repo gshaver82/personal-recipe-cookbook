@@ -7,7 +7,10 @@ const admin = require('firebase-admin');
 
 // Initialize Firebase Admin
 admin.initializeApp({
-    credential: admin.credential.cert( process.env.SERVICE_ACCOUNT_KEY || serviceAccount),
+    credential: admin.credential.cert( process.env.FIREBASE_CLIENT_EMAIL ? {
+        "client_email": process.env.FIREBASE_CLIENT_EMAIL,
+        "private_key": process.env.FIREBASE_PRIVATE_KEY
+    } : serviceAccount),
     databaseURL: "https://recipe-box-6f07a.firebaseio.com"
 });
 
