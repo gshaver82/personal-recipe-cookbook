@@ -1,18 +1,22 @@
 import React from 'react';
 import './Modal.css';
 import FontAwesome from 'react-fontawesome';
+import styled, { keyframes } from "styled-components";
+import { flipInY } from "react-animations";
 
 const Modal = (props) => {
+    
+    const Flip = styled.div`animation: .5s ${keyframes`${flipInY}`}`;
 
     const { closeModal } = props;
 
     const closeIcon = () => (
         <FontAwesome
         // Any close icon can be used
+        className="close-modal"
         name="times"
         onClick={closeModal}
         style={{
-            color: '#000',
             padding: '10px',
             cursor: 'pointer',
             backgroundColor: 'transparent',
@@ -25,12 +29,16 @@ const Modal = (props) => {
     );
 
     return (
+        
         <div className="modal-overlay">
+            <Flip>
             <div className="modal-content">
-                { closeIcon() }
+                {props.noClose ? "" : closeIcon()}
                 {props.children}
             </div>
+            </Flip>
         </div>
+        
     );
 };
 

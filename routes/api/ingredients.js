@@ -4,13 +4,12 @@ const ingredientsController = require("../../controllers/ingredientsController")
 // Matches with "/api/ingredients"
 router.route("/")
     .get(ingredientsController.findAll)
-    .post(ingredientsController.create);
+    .put(ingredientsController.updateIngredientCount);
 
-// Matches with "/api/ingredients/:id"
+// Matches with "/api/ingredients/limitTen"
 router
-    .route("/:id")
-    .get(ingredientsController.findById)
-    .put(ingredientsController.update)
-    .delete(ingredientsController.remove);
+    .route("/limitTen")
+    .get(ingredientsController.findAllLimitTen)
+
 
 module.exports = router;

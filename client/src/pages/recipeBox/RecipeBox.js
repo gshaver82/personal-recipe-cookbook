@@ -1,62 +1,97 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import test from '../../firebase';
+import ls from 'local-storage';
 import RecipeCard from "../../component/RecipeBox/RecipeCard";
 import AddRecipe from "../../component/RecipeBox/AddRecipe";
 import Modal from "../../component/Modal/Modal";
 import API from "../../utils/API";
 import Box from "../../component/RecipeBox/Box"
 import Header from "../../component/RecipeBox/Header"
+import Navbar from "../../component/RecipeBox/Navbar"
 import CardComplete from "../../component/CreateRecipe/CardComplete"
 import '../../component/Modal/Modal.css';
+import RecipeHistory from "../../component/Make/RecipeHistory";
+import { Bounce, Zoom } from "react-awesome-reveal";
 
 const firebase = test.firebase_;
 
 function RecipeBox() {
 
     const user = firebase.auth().currentUser.uid
-    const [status, setStatus] = useState(false);
+    const [display, setDisplay] = useState({
+        card: false,
+        warning: false
+    });
     // Setting component intial state
     const [recipes, setRecipes] = useState([]);
     const [form, setForm] = useState({
         input: "",
         filterBy: ""
     });
-    const [selected, setSelected] = useState({
-        index: ""
-    });
-
-    // Load all recipes and store with setRecipes
-    useEffect(() => {
-        loadRecipes()
-    }, [])
+    const [selected, setSelected] = useState({ index: "" });
+    const [flip, setFlip] = useState(false);
+    const history = useHistory();
 
     // Loads recipes and set them to recipes
     function loadRecipes() {
-        API.getAllRecipes(user)
+        API.getUserRecipes(user)
             .then(res => {
                 setRecipes(res.data);
-                // console.log(res.data);
             })
             .catch(err => console.log(err));
     };
 
-    function onClick (e) {
+    // Load all recipes and store with setRecipes
+    useEffect(() => {
+        loadRecipes();
+        selectRecipe();
+    }, [])
+
+    function onClick(e) {
         const index = e.currentTarget.dataset.index;
         // console.log("this is a test", index)
-        setSelected({index: index})
-        setStatus(true);
+        setSelected({ index: index })
+        setDisplay({...display, card:true});
     }
 
-    function deleteRecipe(event, id) {
+    function selectRecipe(recipe) {
+        if (!recipe) {
+            ls.remove("recipe")
+        } else {
+            ls.set("recipe", recipe)
+        }
+    }
+
+    function deleteConfirmation (event, id) {
         event.stopPropagation()
-        API.deleteRecipe(id)
+        setDisplay({...display, warning:id })
+    }
+
+    function deleteRecipe() {
+        API.deleteRecipe(display.warning)
             .then(res => loadRecipes())
+            .then(setDisplay({...display, warning:false }))
             .catch(err => console.log(err));
+    }
+
+    const selectAndGo = (route) => {
+        selectRecipe(recipes[selected.index]);
+        switch (route) {
+            case "make":
+                history.push('/make');
+                return;
+            case "edit":
+                history.push('/create/info');
+                return;
+            default:
+                return;
+        }
     }
 
     const handleInputChange = event => {
         const value = event.target.value;
-        setForm({...form, input: value});
+        setForm({ ...form, input: value });
     };
 
     const handleFormSubmit = event => {
@@ -74,7 +109,7 @@ function RecipeBox() {
 
     function categorySearch(event) {
         event.stopPropagation();
-        event.preventDefault();      
+        event.preventDefault();
         setForm({
             ...form,
             filterBy: event.currentTarget.textContent.toLowerCase(),
@@ -90,6 +125,10 @@ function RecipeBox() {
         });
     }
 
+    const flipCard = () => {
+        setFlip(!flip);
+    }
+
     function filterRecipes(recipes, filterBy) {
         const arrayFiltered = [];
         for (const item of recipes) {
@@ -102,44 +141,49 @@ function RecipeBox() {
 
     return (
         <Box>
-            <header className="d-flex align-items-center">
-                <h1 className="font-brand">My Recipe Box</h1>
-                <Header 
-                    firebase={firebase}
-                    formInput={form.input}
-                    handleInputChange={handleInputChange}
-                    handleFormSubmit={handleFormSubmit}
-                    clearForm={clearForm}
-                />
-            </header>
+            <Header
+                firebase={firebase}
+                formInput={form.input}
+                handleInputChange={handleInputChange}
+                handleFormSubmit={handleFormSubmit}
+                clearForm={clearForm}
+            />
+            {/* Top Secret */}
+            <Navbar form={form} setForm={setForm}/>
             <section >
-                <div className="row row-cols-md-4">
-                    <div className="col my-2 font-book recipe-card">
-                        <AddRecipe />
-                    </div>
-                    {/* Cards should fill page based on number of recipes users have */}
-                    {/* Example Card... needs data to be added from DB */}
+                <div className="row row-cols-lg-3 row-cols-xl-4">
+                    <AddRecipe />
                     {recipes.length ? (
                         <>
-                            {filterRecipes(recipes, form.filterBy).map((recipe, index)=> {
-                                return (<RecipeCard
+                            {filterRecipes(recipes, form.filterBy).map((recipe, index) => {
+                                return (<Zoom><RecipeCard
                                     recipe={recipe}
-                                    deleteRecipe={deleteRecipe}
+                                    deleteRecipe={deleteConfirmation}
                                     onClick={onClick}
                                     key={(index + 1)}
                                     index={index}
                                     categorySearch={categorySearch}
-                                />)
+                                /></Zoom>)
                             })}
                         </>
                     ) : (<h3>No Recipes to Display</h3>)
                     }
                     {/* This will have more descriptive recipe content */}
-                    {status && (<Modal closeModal={() => setStatus(false)}>
-                        <CardComplete recipe={recipes[selected.index]}></CardComplete>
-                    </Modal>)}
+                    {display.card && (<Modal closeModal={() => setDisplay({...display, card:false})}>
+                        {flip ? <RecipeHistory flipCard={flipCard} recipe={recipes[selected.index]} /> : <CardComplete flipCard={flipCard} recipe={recipes[selected.index]} />}
+                        <button type="button" onClick={() => selectAndGo("make")} className="rb-btn btn-info mb-3 text-center">Make
+                        </button>
+                        <button type="button" onClick={() => selectAndGo("edit")} className="rb-btn btn-secondary text-center">Edit Recipe
+                        </button>
+                        </Modal>)}
                 </div>
             </section>
+            {display.warning && (<Modal closeModal={() => setDisplay({...display, warning:false})}>
+                <span className="divider-color"></span>
+                <h3 className="font-book text-center mb-0">Are you sure you want to delete this recipe?</h3>
+                <span className="font-book-italic text-center divider">This cannot be undone</span>
+                <button className="rb-btn btn-danger" onClick={() => deleteRecipe()}>delete</button>
+            </Modal>)}
         </Box>
     );
 }

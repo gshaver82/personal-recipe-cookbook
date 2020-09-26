@@ -7,7 +7,6 @@ import './firebaseui-styling.css';
 import { AuthContext } from "../../component/Auth";
 
 function Login({history}) {
-    
     // This is some crazy bullshit and I have no idea why it's not working correctly. v
     const firebase = test.firebase_;
     const [userCred, setUserCred] = useState({});
@@ -30,7 +29,6 @@ function Login({history}) {
 
     const authenticateUser = async (event) => {
         event.preventDefault();
-        // console.log("Signing In", userCred.email, event.target.name);
         try {
             if (event.target.name === "signin") {
                 await firebase.auth().signInWithEmailAndPassword(userCred.email, userCred.password);
@@ -39,18 +37,11 @@ function Login({history}) {
             } else {
                 return;
             }
-            // Will redirect upon signin, or signup, disabled for testing
             history.push("/recipebox");
         } catch (error) {
             alert(error);
         }
     }
-
-    // Couldn't get this to work passing in state. ...Seems to work without it.
-    // const submitForm = useCallback(
-    //     authenticatUser,
-    //     [history]
-    // );
 
     return (
         <TestCard>

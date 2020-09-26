@@ -6,6 +6,8 @@ import TestCard from "../../component/TestCard"
 import { AuthContext } from "../../component/Auth";
 import Modal from "../../component/Modal/Modal";
 import PrivacyPolicyText from "../../component/PrivacyPolicy/PrivacyPolicyText";
+import Sparkles from "../../component/Sparkle/Sparkles";
+
 
 function Splash() {
     const app = test.firebase_;
@@ -13,10 +15,11 @@ function Splash() {
     const [display, setDisplay] = useState(false);
 
     return (
+
         <div>
             <TestCard>
                 <section className="text-center">
-                    <h1 className="font-brand">Recipe Box.</h1>
+                    <h1 className="font-brand display-3"><Sparkles>Recipe Box.</Sparkles></h1>
                     <p className="divider font-script">make something better</p>
                     <img className="img-fluid mb-3" src={box} alt="recipe box" />
                 </section>
@@ -27,7 +30,7 @@ function Splash() {
                     {!!currentUser ? (
                         <>
                             <Link to="/recipebox" className="btn-secondary rb-btn mr-4">Recipe Box</Link> 
-                            <button className="rb-btn btn-primary" onClick={() => app.auth().signOut()}>Sign Out</button>
+                            <button className="rb-btn btn-info" onClick={() => app.auth().signOut()}>Sign Out</button>
                         </>
                         ) : (
                             <Link to="/login" className="btn-secondary rb-btn">Sign In</Link>
@@ -36,7 +39,8 @@ function Splash() {
                 </section>
             </TestCard>
             <div className="d-flex justify-content-center">
-                <button className="rb-btn btn-secondary mt-4" onClick={() => setDisplay(true)}>Privacy Policy</button>
+                <button className="rb-btn btn-secondary mt-4 mr-4" onClick={() => setDisplay(true)}>Privacy Policy</button>
+                <Link to="/aboutus" className="rb-btn btn-secondary mt-4">About Us</Link>
             </div>
             { display && (<Modal closeModal={() => setDisplay(false)}>
                 <PrivacyPolicyText/>

@@ -1,79 +1,150 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useRecipe } from "../../component/CreateRecipe/RecipeContext";
-import TableBody from "../DynamicTable/TableBody"
-import TableHeader from "../DynamicTable/TableHeader"
+import TableControl from "../DynamicTable/TableControl";
 import TableButton from "../DynamicTable/TableButton";
-import TestCard from "../TestCard"
+import TestCard from "../TestCard";
+import ExitBtn from "./ExitBtn";
+import timeParser from "../../utils/timeParser"
 
 function AddSteps() {
 
-    const initState = {
+    const initAction = {
         title: "",
         text: "",
+        timer: "",
+    }
+
+    const initTimer = {
+        hours: "",
+        minutes: ""
     }
 
     const { recipe, setValues } = useRecipe();
     const history = useHistory();
-    const [action, setAction] = useState(initState);
-    const [actions, setActions] = useState([]);
+    const [action, setAction] = useState(initAction);
+    const [timer, setTimer] = useState(initTimer);
+    const [actions, setActions] = useState([...recipe.actions || ""]);
+    const editMode = !!recipe._id;
 
     const clearActions = (e) => {
         setActions([]);
     }
 
+    const deleteAction = (index) => {
+        let array = [...actions];
+        array.splice(index, 1);
+        setActions(array);
+    }
+
     const completeActions = (e) => {
         e.preventDefault();
-        setValues({actions: actions});
-        history.push('/create/complete');
+        if (actions.length < 1) {
+            let element = document.getElementById("warning");
+            let margins = document.getElementsByClassName("margin");
+            for (let elem of margins) {
+                elem.classList.add("error-margin");
+            }
+            element.classList.add("is-invalid");
+        } else {
+            setValues({ actions: actions });
+            history.push('/create/complete');
+        }
+
     }
 
     useEffect(() => {
-        console.log("Actions list is:", actions);
-        console.log("Recipe contains the following Actions:", recipe.recipeActions);
-    })
+        (timer.hours.length || timer.minutes.length) ?
+            setAction({ ...action, timer: timeParser("SEC", timer.hours, timer.minutes) })
+            :
+            setAction({ ...action, timer: "" });
+    }, [timer])
 
     const onChange = (e) => {
         setAction({ ...action, [e.target.name]: e.target.value });
     }
 
+    const onTime = (e) => {
+        setTimer({ ...timer, [e.target.name]: e.target.value });
+    }
+
     const onSubmit = (e) => {
+        let element = document.getElementById("warning");
+        let margins = document.getElementsByClassName("margin");
+        for (let elem of margins) {
+            elem.classList.remove("error-margin");
+        }
+        element.classList.remove("is-invalid");
         e.preventDefault();
         setActions([...actions, action]);
-        setAction(initState);
+        setAction(initAction);
+        setTimer(initTimer);
     }
 
     return (
         <TestCard>
-            <h1 className="display-1 font-brand">add steps:</h1>
-            <div className="table-responsive">
-                <table className="table font-book">
-                    <TableHeader />
-                    <TableBody tableContents={actions} />
-                </table>
+            <div className="d-flex justify-content-between">
+                <h2 className="font-brand display-3">
+                    {editMode ? <span>edit steps:</span> : <span>add steps:</span>}
+                </h2>
+                <Link className="d-flex btn-delete font-sans" to={{ pathname: "/recipebox" }}>
+                    <ExitBtn />
+                </Link>
             </div>
+            <TableControl actions={actions} delete={deleteAction} header={true}></TableControl>
             <form onSubmit={e => onSubmit(e)} className="g-2">
                 <div className="form-group">
                     <div className="d-flex mb-2">
-                        <input
-                            type="text"
-                            required
-                            className="form-control"
-                            name="title"
-                            value={action.title}
-                            onChange={e => onChange(e)}
-                            placeholder="Instruction"
-                            aria-label="Instruction"
-                        />
-                        <div className="d-flex align-items-center ml-2">
-                            <button
-                                type="submit"
-                                className="rb-btn-icon btn-light p-0"
+                        <div className="w-100">
+                            <input
+                                type="text"
+                                required
+                                className="form-control form-tweak"
+                                id="warning"
+                                name="title"
+                                value={action.title}
+                                onChange={e => onChange(e)}
+                                placeholder="Instruction"
+                                aria-label="Instruction"
+                            />  
+                            <div className="invalid-feedback font-book-italic">
+                            Recipe must include at least one step.
+                            </div>
+                        </div>
+                        <div className="input-group ml-2 margin">
+                            <span className="input-group-text form-control font-book">Create Timer:</span>
+                            <input
+                                type="number"
+                                min="1" max="99" step="1"
+                                className="form-control"
+                                name="hours"
+                                value={timer.hours}
+                                onChange={e => onTime(e)}
+                                placeholder="Hours"
+                                aria-label="Hours"
+                            />
+                            <input
+                                type="number"
+                                min="1" max="59" step="1"
+                                className="form-control"
+                                name="minutes"
+                                value={timer.minutes}
+                                onChange={e => onTime(e)}
+                                placeholder="Minutes"
+                                aria-label="Minutes"
+                            />
+                        </div>
+                        <button type="submit" className="rb-btn-subtle d-flex align-items-center ml-2 px-2 margin">
+                            <span className="text-nowrap">ADD STEP</span>
+                            <span
+                                className="rb-btn-icon btn-transparent ml-2"
                             >
                                 <TableButton />
-                            </button>
-                        </div>
+                            </span>
+                        </button>
+                        
                     </div>
+                    
                     <textarea
                         type="text"
                         required
@@ -88,10 +159,12 @@ function AddSteps() {
             </form>
             <div className="mt-4 d-flex justify-content-between">
                 <div className="d-flex justify-content-center">
-                    <Link className="rb-btn btn-danger" to={{ pathname: "/create/info" }}>Restart</Link>
-                    <button type="button" className="rb-btn btn-warning ml-2" onClick={clearActions}>Reset</button>
+                    <Link className="rb-btn btn-info" to={{ pathname: "/create/ingredients" }}>Back</Link>
+                    <button type="button" className="rb-btn btn-danger ml-2" onClick={clearActions}>Clear</button>
                 </div>
-                <button className="rb-btn btn-success" onClick={completeActions}>Complete</button>
+                <button className="rb-btn btn-info" onClick={completeActions}>
+                    {editMode ? <span>review changes</span> : <span>complete recipe</span>}
+                </button>
             </div>
         </TestCard>
     )

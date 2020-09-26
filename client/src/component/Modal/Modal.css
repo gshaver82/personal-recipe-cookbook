@@ -16,9 +16,41 @@
 
 .modal-content {
     margin: 5% auto;
-    background-color: white;
+    background-color: var(--modal-bgcolor, white);
     border-radius: 0.25rem;
     width: 50vw;
     padding: 2rem;
     position: relative;
 }
+
+.close-modal {
+    color: var(--close-modal, black);
+}
+
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 60vw;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-content {
+        width: 70vw;
+    }
+}
+
+/* iPhone X, Pixel 2 */
+@media (max-width: 415px) {
+    .modal-content {
+        width: 85vw;
+    }
+}
+
+/* Galaxy S5 */
+@media (max-width: 360px) {
+    .modal-content {
+        width: 90vw;
+    }
+}
+
